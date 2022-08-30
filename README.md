@@ -1,0 +1,2 @@
+# EasyGetMaidenheadCode
+为了方便各位ham获取自己在梅登黑德定位系统中的位置而开发
