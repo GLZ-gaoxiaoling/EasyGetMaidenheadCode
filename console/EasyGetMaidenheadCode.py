@@ -1,9 +1,10 @@
+from ast import Try
 from multiprocessing.util import info
 import sys
 from geopy.geocoders import Nominatim
 import geoip2.database
 import requests
-import requests
+import json
 import re
 
 
@@ -32,7 +33,10 @@ def LL_2_Maidenhead(float_Longitude, float_Latitude):  # 将！经纬度转换�
 def getLogitudeAndLatitude(ip):
     reader = geoip2.database.Reader('./GeoLite2-City.mmdb')
     response = reader.city(ip)
-    cityName = str(response.city.names["zh-CN"])
+    try:
+        cityName = str(response.city.names["zh-CN"])
+    except:
+        cityName = str(response.city.name)
     geolocator = Nominatim(
         user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36")  # 放ua
     location = geolocator.geocode(cityName)
@@ -40,12 +44,15 @@ def getLogitudeAndLatitude(ip):
 
 
 def getIp():
-    return requests.get('http://ip.cip.cc/').text
+    return json.loads(requests.get('https://api.ipify.org/?format=json').text)['ip']
+
 
 def miniSetup():
-        Longitude = input("请输入你所在地的经度")
-        Latitube = input("请输入你所在地的纬度")
-        print("在你的经纬度输入正确的前提下,你的Maidenhead代码为:"+LL_2_Maidenhead(float(Longitude),float(Latitube)))
+    Longitude = input("请输入你所在地的经度")
+    Latitube = input("请输入你所在地的纬度")
+    print("在你的经纬度输入正确的前提下,你的Maidenhead代码为:" +
+          LL_2_Maidenhead(float(Longitude), float(Latitube)))
+
 
 def main(ip, typei):
     if(typei == 0):
@@ -53,10 +60,11 @@ def main(ip, typei):
     Ll2D = getLogitudeAndLatitude(ip)
     return ip, Ll2D
 
-if input("是否要进行轻量化启动？ y/n")!="y":
+
+if input("是否要进行轻量化启动？ y/n") != "y":
     Info01 = main(0, 0)
     print("如果你的地址是"+Info01[1][2]+"的话,那么你的Maidenhead代码大概为:" +
-        LL_2_Maidenhead(Info01[1][0], Info01[1][1])+"如果不是,请输入1")
+          LL_2_Maidenhead(Info01[1][0], Info01[1][1])+"如果不是,请输入1")
     if(input() != str(1)):
         print("程序退出")
         sys.exit()
