@@ -72,5 +72,7 @@ if input("是否要进行轻量化启动？ y/n") != "y":
         miniSetup()
 else:
     miniSetup()
+
+input('任意键退出(指键盘上的任意字母键,说不定电源键也可以？)')
 # print(getLogitudeAndLatitude("112.74.207.96"))
 # print(LL_2_Maidenhead(117.988929, 36.63561))
